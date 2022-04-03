@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<!-- Code tutorials and demo code from Javascript Academy at https://www.youtube.com/watch?v=R-bSb7xrS5s&t=222s&ab_channel=JavaScriptAcademy and random nerd tutorials at https://randomnerdtutorials.com/esp32-servo-motor-web-server-arduino-ide/-->
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <style type="text/css">
+        body {
+            text-align: center;
+            font-family: "Trebuchet MS", Arial;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .slider {
+            width: 30vw;
+        }
+
+        h1 {
+            font-size: 5vw;
+            padding: 4px 0px 0px 0px;
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            font-size: 2vw;
+            padding: 0px 0px 0px 0px;
+            margin-top: 0px;
+        }
+
+        .responsive {
+            width: 100%;
+            max-width: 575px;
+            height: auto;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        .container {
+            min-height: 35vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .controls {
+            margin-top: 16px;
+        }
+
+        .button {
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            padding: 8px 24px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+
+        .set-alarm {
+            background-color: #498AFB;
+        }
+
+        .clear-alarm {
+            background-color: #FF3860;
+        }
+
+        #clock {
+            font-size: 7vw;
+            padding: 20px 5px 5px 5px
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>
+        <img src="https://imgur.com/zsqg0jw.png" alt="blindslogo" id="logo" class = "responsive">
+    </h1>
+    <h2>Position: <span id="servoPos"></span></h2>
+    <input type="range" min="0" max="100" class="slider" id="servoSlider" onchange="motor(this.value)" />
+    <script>
+        var slider = document.getElementById("servoSlider");
+        var servoP = document.getElementById("servoPos");
+        servoP.innerHTML = slider.value;
+        slider.oninput = function () {
+            slider.value = this.value;
+            servoP.innerHTML = this.value;
+        }
+
+        $.ajaxSetup({ timeout: 1000 });
+        function motor(pos) {
+            $.get("/?value=" + pos + "&");
+            { Connection: close };
+            if (pos < 25) {
+                document.getElementById("logo").src = "https://imgur.com/zsqg0jw.png";
+            }
+            if (pos > 25) {
+                document.getElementById("logo").src = "https://imgur.com/oFkK7wY.png";
+            }
+            if (pos > 50) {
+                document.getElementById("logo").src = "https://imgur.com/G443F9v.png";
+            }
+            if (pos > 75) {
+                document.getElementById("logo").src = "https://imgur.com/A5KGlZR.png";
+            }
+        }
+    </script>
+    <section class="container">
+        <div id="clock"></div>
+        <input onchange="setAlarmTime(this.value)" name="alarmTime" type="datetime-local" />
+        <div class="controls">
+            <button onclick="setAlarm()" class="button set-alarm">Set alarm</button>
+            <button onclick="clearAlarm()" class="button clear-alarm">Stop alarm</button>
+        </div>
+    </section>
+    <script type="text/javascript">
+        const display = document.getElementById('clock');
+        const alarm = new Audio('https://audio-previews.elements.envatousercontent.com/files/106595456/preview.mp3?response-content-disposition=attachment%3B+filename%3D%225UBZP7Q-danger-alarm.mp3%22');
+        alarm.loop = true;
+        let alarmTime = null;
+        let alarmTimeout = null;
+
+        function updateTime() {
+            const date = new Date();
+            const hour = formatTime(date.getHours());
+            const minutes = formatTime(date.getMinutes());
+            const seconds = formatTime(date.getSeconds());
+
+            display.innerText = `${hour}:${minutes}:${seconds}`;
+
+        }
+
+        function formatTime(time) {
+            if (time < 10) {
+                return '0' + time;
+            }
+            return time;
+        }
+        function setAlarmTime(value) {
+            alarmTime = value;
+        }
+
+        function setAlarm() {
+            if (alarmTime) {
+                const current = new Date();
+                const timeToAlarm = new Date(alarmTime);
+
+
+                if (timeToAlarm > current) {
+                    document.getElementById("servoSlider").value = 0;
+                    document.getElementById("servoPos").value = "0";
+                    servoP.innerHTML = "0";
+                    $.get("/?value=" + 0 + "&");
+                    { Connection: close };
+                    const timeout = timeToAlarm.getTime() - current.getTime();
+                    alarmTimeout = setTimeout(() => alarmArm(), timeout);
+                }
+            }
+        }
+
+
+        function alarmArm() {
+            alarm.play();
+            $.get("/?value=" + 100 + "&");
+            { Connection: close };
+            document.getElementById("servoSlider").value = 100;
+            document.getElementById("servoPos").value = "100";
+            servoP.innerHTML = "100";
+        }
+
+
+
+        function clearAlarm() {
+            alarm.pause();
+            if (alarmTimeout) {
+                clearTimeout(alarmTimeout);
+                alert("Threat neutralized");
+            }
+        }
+
+        setInterval(updateTime, 1000);</script>
+</body>
+
+</html>
