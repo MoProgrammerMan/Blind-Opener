@@ -16,6 +16,7 @@
 
         .slider {
             width: 30vw;
+            -webkit-transition: .2s; /* 0.2 seconds transition on hover */
         }
 
         h1 {
@@ -31,7 +32,7 @@
         }
 
         .responsive {
-            width: 100%;
+            width: 80%;
             max-width: 575px;
             height: auto;
         }
@@ -80,7 +81,7 @@
 </head>
 <body>
     <h1>
-        <img src="https://imgur.com/zsqg0jw.png" alt="blindslogo" id="logo" class = "responsive">
+        <img src="https://imgur.com/zsqg0jw.png" alt="blindslogo" id="logo" class="responsive">
     </h1>
     <h2>Position: <span id="servoPos"></span></h2>
     <input type="range" min="0" max="100" class="slider" id="servoSlider" onchange="motor(this.value)" />
@@ -183,7 +184,6 @@
                 alert("Threat neutralized");
             }
         }
-
         setInterval(updateTime, 1000);</script>
 </body>
 
