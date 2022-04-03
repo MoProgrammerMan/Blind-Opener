@@ -1,6 +1,6 @@
 /*********
-  Yusuf Elazzazi
-  Code adopted from https://randomnerdtutorials.com  
+  Rui Santos
+  Complete project details at https://randomnerdtutorials.com  
 *********/
 
 #include <WiFi.h>
@@ -271,34 +271,45 @@ void loop(){
             // Display the HTML web pageclient.println("); 
 
             client.println(webpage); 
-                          
             //GET /?value=180& HTTP/1.1
             if(header.indexOf("GET /?value=")>=0) {
+              int lastPos =valueString.toInt();                
+
               pos1 = header.indexOf('=');
               pos2 = header.indexOf('&');
               valueString = header.substring(pos1+1, pos2);
               
-              if(valueString.toInt() < 50){
-                
-               int delayTime = 200 * valueString.toInt();
-               digitalWrite(13, HIGH);
-               digitalWrite(12, LOW);
-               delay(delayTime);
-                
-              Serial.println(" Motor Rotating Value is");
-              Serial.println(valueString);
-              }
-              else if(valueString.toInt() > 50){
-                int delayTime = 200 * (valueString.toInt() - 50);
-                digitalWrite(13, LOW);
-                digitalWrite(12, HIGH);
-                delay(delayTime);}
-                
-              else{
-                            digitalWrite(13, LOW);
-                            digitalWrite(12, LOW);
-              }             //Rotate the servo
+              int dirVal = lastPos - valueString.toInt(); 
+
+                if(dirVal > 3){
+                  digitalWrite(13,HIGH);
+                  digitalWrite(12, LOW); 
+                  int delayTime = abs(dirVal)*100;
+                  delay(delayTime);  
+                  Serial.println("Dirval more"); 
+                  Serial.println(dirVal);
+                  Serial.println(lastPos); 
+                  Serial.println(delayTime);
+                }
+                  
+                else if(dirVal < 3){
+                  digitalWrite(13,LOW);
+                  digitalWrite(12, HIGH);
+                  int delayTime = abs(dirVal)*100;
+                  delay(delayTime);  
+                  Serial.println("Dirval less"); 
+                  Serial.println(dirVal);
+                  Serial.println(lastPos);
+                  Serial.println(delayTime); 
+                }   
             
+                else{
+                  digitalWrite(13,LOW);
+                  digitalWrite(12, LOW);
+                  Serial.println("Dirval zero"); 
+                  Serial.println(dirVal);
+                  Serial.println(lastPos);
+                }
             }         
             // The HTTP response ends with another blank line
             client.println();
