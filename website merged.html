@@ -4,6 +4,7 @@
 
 <html>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
     <style type="text/css">
@@ -15,8 +16,9 @@
         }
 
         .slider {
-            width: 30vw;
-            -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+            width: 75vw;
+            max-width: 500px;
+            -webkit-transition: .2s;
         }
 
         h1 {
@@ -26,7 +28,7 @@
         }
 
         h2 {
-            font-size: 2vw;
+            font-size: 3vw;
             padding: 0px 0px 0px 0px;
             margin-top: 0px;
         }
@@ -77,13 +79,12 @@
             padding: 20px 5px 5px 5px
         }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
     <h1>
         <img src="https://imgur.com/zsqg0jw.png" alt="blindslogo" id="logo" class="responsive">
     </h1>
-    <h2>Position: <span id="servoPos"></span></h2>
+    <h2>Blind Status: <span id="servoPos"></span></h2>
     <input type="range" min="0" max="100" class="slider" id="servoSlider" onchange="motor(this.value)" />
     <script>
         var slider = document.getElementById("servoSlider");
@@ -154,11 +155,12 @@
 
 
                 if (timeToAlarm > current) {
-                    document.getElementById("servoSlider").value = 0;
-                    document.getElementById("servoPos").value = "0";
-                    servoP.innerHTML = "0";
-                    $.get("/?value=" + 0 + "&");
+                    document.getElementById("servoSlider").value = 100;
+                    document.getElementById("servoPos").value = "100";
+                    servoP.innerHTML = "100";
+                    $.get("/?value=" + 100 + "&");
                     { Connection: close };
+                    alert("Done!")
                     const timeout = timeToAlarm.getTime() - current.getTime();
                     alarmTimeout = setTimeout(() => alarmArm(), timeout);
                 }
@@ -168,11 +170,11 @@
 
         function alarmArm() {
             alarm.play();
-            $.get("/?value=" + 100 + "&");
+            $.get("/?value=" + 0 + "&");
             { Connection: close };
-            document.getElementById("servoSlider").value = 100;
-            document.getElementById("servoPos").value = "100";
-            servoP.innerHTML = "100";
+            document.getElementById("servoSlider").value = 0;
+            document.getElementById("servoPos").value = "0";
+            servoP.innerHTML = "0";
         }
 
 
